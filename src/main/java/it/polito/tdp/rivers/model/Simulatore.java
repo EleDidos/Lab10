@@ -60,10 +60,10 @@ public class Simulatore {
 			System.out.println(e);
 			f_in=this.getFlowAtThatTime(e.getTime());
 			
-			//TRACIMAZIONE: esce l'eccesso
+			//TRACIMAZIONE: esce l'eccesso + f_out
 			if(C+f_in>Q) {
 				double eccesso=Q-(C+f_in);
-				C=C+f_in-eccesso;
+				C=C+f_in-eccesso-f_out;
 				livelliC.add(C);
 			} else {
 				C=C+f_in; //entrata
@@ -74,7 +74,7 @@ public class Simulatore {
 					if(C-(10*f_out_min)>0)
 						C=C-(10*f_out_min);
 					else
-						C=C-f_out_min;
+						C=0; //acqua esce tutta
 					livelliC.add(C);
 				} else {
 					//EROGAZIONE MINIMA non garantita
