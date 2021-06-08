@@ -1,13 +1,13 @@
-/**
- * Sample Skeleton for 'Scene.fxml' Controller Class
- */
 
 package it.polito.tdp.rivers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.rivers.model.Flow;
 import it.polito.tdp.rivers.model.Model;
+import it.polito.tdp.rivers.model.River;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -15,6 +15,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class FXMLController {
+	
+	//SONO UNA SOLUZIONE
 	
 	private Model model;
 
@@ -25,7 +27,7 @@ public class FXMLController {
     private URL location;
 
     @FXML // fx:id="boxRiver"
-    private ComboBox<?> boxRiver; // Value injected by FXMLLoader
+    private ComboBox<String> boxRiver; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtStartDate"
     private TextField txtStartDate; // Value injected by FXMLLoader
@@ -47,6 +49,9 @@ public class FXMLController {
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
+    
+    
+    
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
@@ -60,7 +65,61 @@ public class FXMLController {
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Scene.fxml'.";
     }
     
+    String[] dati = new String[4];
+    River river;
+    
     public void setModel(Model model) {
     	this.model = model;
+    	boxRiver.getItems().addAll(this.model.getRivers());
+    	
+    	model.addFlows(); //aggiungo i flussi ai vari fiumi
     }
-}
+    
+    @FXML
+    void doCompilaDati(ActionEvent event) {
+    	String scelto;
+    	
+    	try {
+    		scelto=boxRiver.getValue();
+    		if(scelto!=null) { //utente ha scelto un fiume
+    			dati = this.model.getDates(scelto);
+    			river=model.getRiver(scelto);
+    			
+    		}
+    	}catch(NullPointerException npe) {
+    		txtResult.setText("Devi scegliere un fiume");
+    		return ;
+    	}
+    	
+
+    	
+    		txtStartDate.setText(dati[0]);
+    		txtEndDate.setText(dati[1]);
+    		txtNumMeasurements.setText(dati[2]);
+    		txtFMed.setText(dati[3]);
+    	
+    }
+    
+    
+    @FXML
+    void doSimula(ActionEvent event) {
+    	txtResult.clear();
+    	Double k;
+    	
+    	try {
+    		k=Double.parseDouble(txtK.getText());
+    	}
+    	catch(NullPointerException npe) {
+    		txtResult.setText("Devi scrivere un numero intero");
+    		return ;
+    	}
+    	
+    	
+    	
+    	txtResult.appendText((this.model.simula(k,river)).toString());
+    	
+    	
+    	
+    }}
+    	
+    
